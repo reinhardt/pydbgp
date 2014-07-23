@@ -2918,10 +2918,9 @@ class backendCmd(backend):
         self.socket.send_response(_template % (tid, bpinfo))
 
     _eval_optlist = [['i','transaction_id', int, 1, -1, None],
-                ['l','length', int, 1, 0, None],
                    ['c', 'context_id', int, 0, 0, _validateContextId]]
     def do_eval(self, cmdargs, *args):
-        (tid, data_length, context_id, data,) = self._getopts(cmdargs, self._eval_optlist, "eval")
+        (tid, context_id, data,) = self._getopts(cmdargs, self._eval_optlist, "eval")
         
         # read data_length from the socket
         if self._data_encoding == 'base64':
@@ -2937,7 +2936,7 @@ class backendCmd(backend):
             raise CommandError('eval', tid, ERROR_EVAL_FAILED,
                            'eval of expression failed: '+str(e))
 
-        prop = Property(None, None, value, self._data_encoding,
+        prop = Property(data, data, value, self._data_encoding,
                             self._show_hidden) # , hiddenContextTypes[context_id])
         
         _template = '<response xmlns="urn:debugger_protocol_v1" command="eval" transaction_id="%s">%s</response>'
